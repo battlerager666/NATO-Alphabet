@@ -13,6 +13,11 @@ section {
     min-height: 80vh;
 }
 
+#div_buttons{
+    display: flex;
+    flex-direction: column;
+}
+
 #button_1, #button_2, #button_3{
     height: 8rem;
     width: 10rem;
@@ -25,7 +30,7 @@ section {
     background-color: rgb(138, 117, 91);
 }
 
-#p_buchstabe, #p_streak, #p_höchsteStreak{
+#p_buchstabe, #p_streak{
     height: 8rem;
     width: auto;
     font-size: 4rem;
@@ -35,3 +40,12 @@ section {
     margin: auto;
 }
 
+#p_höchsteStreak{
+    height: 8rem;
+    width: auto;
+    font-size: 2rem;
+    color: bisque;
+    text-align: center;
+    align-content: center;
+    margin: auto;
+}
