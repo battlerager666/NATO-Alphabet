@@ -1,0 +1,37 @@
+body {
+    margin: 0;
+    background-color: rgb(44, 40, 29);
+    color: rgb(60, 60, 60);
+    font-family: fantasy;
+}
+
+section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+}
+
+#button_1, #button_2, #button_3{
+    height: 8rem;
+    width: 10rem;
+    margin: auto;
+    border-radius: 0.5rem;
+    font-size: 2.5rem;
+    background-color: rgb(156, 127, 89);
+}
+#button_1:hover, #button_2:hover, #button_3:hover{
+    background-color: rgb(138, 117, 91);
+}
+
+#p_buchstabe, #p_streak, #p_höchsteStreak{
+    height: 8rem;
+    width: auto;
+    font-size: 4rem;
+    color: bisque;
+    text-align: center;
+    align-content: center;
+    margin: auto;
+}
+
