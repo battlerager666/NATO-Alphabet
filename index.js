@@ -10,27 +10,38 @@ var höchsteStreak = 0;
 
 
 
+window.onload = function(){
+    dreiWörter = storageProxy.dreiWörter != null ? storageProxy.dreiWörter : [];
+    alleWörterShuffle = storageProxy.alleWörterShuffle != null ? storageProxy.alleWörterShuffle : [];
+    ausgewählterIndex = storageProxy.ausgewählterIndex;
+    streak = storageProxy.streak != null ? storageProxy.streak : 0;
+    höchsteStreak = storageProxy.höchsteStreak != null ? storageProxy.höchsteStreak : 0;
 
-//drei buttons aktualisieren
-function neueWörter(){
-    dreiWörter = [];
-
-    shuffle(alleWörterShuffle);
 
     document.getElementById("button_1").textContent = alleWörterShuffle[0];
     document.getElementById("button_2").textContent = alleWörterShuffle[1];
     document.getElementById("button_3").textContent = alleWörterShuffle[2];
 
-    dreiWörter.push(alleWörter.indexOf(alleWörterShuffle[0]));
-    dreiWörter.push(alleWörter.indexOf(alleWörterShuffle[1]));
-    dreiWörter.push(alleWörter.indexOf(alleWörterShuffle[2]));
-
-    ausgewählterIndex = dreiWörter[Math.floor(Math.random() * dreiWörter.length)];
-
-
     document.getElementById("p_buchstabe").textContent = alleBuchstaben[ausgewählterIndex];
+
+
+    document.getElementById("p_höchsteStreak").textContent = "Höchste Streak: " + höchsteStreak;
+
+    document.getElementById("p_streak").textContent = "Streak: " + streak;
+    console.log(höchsteStreak);
 }
 
+
+
+const storageProxy = new Proxy({}, {
+    get(target, key){
+        return JSON.parse(localStorage.getItem(key));
+    },
+    set(target, key, value){
+        localStorage.setItem(key, JSON.stringify(value));
+        return true;
+    }
+})
 
 
 //function shuffle
@@ -47,6 +58,35 @@ function changeBackground(color){
     document.body.style.background = color;
 }
 
+
+
+
+
+//drei buttons aktualisieren + neuer buchstabe
+function neueWörter(){
+    dreiWörter = [];
+
+    shuffle(alleWörterShuffle);
+    storageProxy.alleWörterShuffle = alleWörterShuffle;
+
+    document.getElementById("button_1").textContent = alleWörterShuffle[0];
+    document.getElementById("button_2").textContent = alleWörterShuffle[1];
+    document.getElementById("button_3").textContent = alleWörterShuffle[2];
+
+    dreiWörter.push(alleWörter.indexOf(alleWörterShuffle[0]));
+    dreiWörter.push(alleWörter.indexOf(alleWörterShuffle[1]));
+    dreiWörter.push(alleWörter.indexOf(alleWörterShuffle[2]));
+    storageProxy.dreiWörter = dreiWörter;
+
+    ausgewählterIndex = dreiWörter[Math.floor(Math.random() * dreiWörter.length)];
+    storageProxy.ausgewählterIndex = ausgewählterIndex;
+
+
+    document.getElementById("p_buchstabe").textContent = alleBuchstaben[ausgewählterIndex];
+}
+
+
+
 //hintergrund ändern
 function checkAnswer(trueOrFalse) {
     if(trueOrFalse === true) { //wenn richtig: neue runde und grüner hintergrund
@@ -56,8 +96,10 @@ function checkAnswer(trueOrFalse) {
           }, 500);
 
         streak++;
+        storageProxy.streak = streak;
         if(streak > höchsteStreak){
             höchsteStreak = streak;
+            storageProxy.höchsteStreak = höchsteStreak;
             document.getElementById("p_höchsteStreak").textContent = "Höchste Streak: " + höchsteStreak;
         }
         document.getElementById("p_streak").textContent = "Streak: " + streak;
@@ -68,6 +110,7 @@ function checkAnswer(trueOrFalse) {
           }, 500);
 
         streak = 0;
+        storageProxy.streak = streak;
         document.getElementById("p_streak").textContent = "Streak: " + streak;
     }
 }
