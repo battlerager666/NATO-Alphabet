@@ -1,9 +1,7 @@
 const alleBuchstaben = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"];
 const alleWörter = ["lpha", "ravo", "harlie", "elta", "cho", "oxtrot", "olf", "otel", "ndia", "uliet", "ilo", "ima", "ike", "ovember", 
     "scar", "apa", "uebec", "omeo", "ierra", "ango", "niform", "ictor", "hiskey", "ray", "ankee", "ulu"];
-var alleWörterShuffle = ["lpha", "ravo", "harlie", "elta", "cho", "oxtrot", "olf", "otel", "ndia", "uliet", "ilo", "ima", "ike", "ovember", 
-    "scar", "apa", "uebec", "omeo", "ierra", "ango", "niform", "ictor", "hiskey", "ray", "ankee", "ulu"];
-var dreiWörter = [];
+var dreiZufälligeZahlen;
 var ausgewählterIndex;
 var streak = 0;
 var höchsteStreak = 0;
@@ -11,16 +9,15 @@ var höchsteStreak = 0;
 
 
 window.onload = function(){
-    dreiWörter = storageProxy.dreiWörter != null ? storageProxy.dreiWörter : [];
-    alleWörterShuffle = storageProxy.alleWörterShuffle != null ? storageProxy.alleWörterShuffle : [];
+    dreiZufälligeZahlen = storageProxy.dreiZufälligeZahlen;
     ausgewählterIndex = storageProxy.ausgewählterIndex;
     streak = storageProxy.streak != null ? storageProxy.streak : 0;
     höchsteStreak = storageProxy.höchsteStreak != null ? storageProxy.höchsteStreak : 0;
 
 
-    document.getElementById("button_1").textContent = alleWörterShuffle[0];
-    document.getElementById("button_2").textContent = alleWörterShuffle[1];
-    document.getElementById("button_3").textContent = alleWörterShuffle[2];
+    document.getElementById("button_1").textContent = alleWörter[dreiZufälligeZahlen[0]];
+    document.getElementById("button_2").textContent = alleWörter[dreiZufälligeZahlen[1]];
+    document.getElementById("button_3").textContent = alleWörter[dreiZufälligeZahlen[2]];
 
     document.getElementById("p_buchstabe").textContent = alleBuchstaben[ausgewählterIndex];
 
@@ -28,7 +25,6 @@ window.onload = function(){
     document.getElementById("p_höchsteStreak").textContent = "Höchste Streak: " + höchsteStreak;
 
     document.getElementById("p_streak").textContent = "Streak: " + streak;
-    console.log(höchsteStreak);
 }
 
 
@@ -53,6 +49,34 @@ function shuffle(array){
     }
 }
 
+
+function randomNumber(amount, sourceArray) {
+    if (!randomNumber.usedIndices) {
+        randomNumber.usedIndices = new Set();
+    }
+
+    if (sourceArray.length < amount + randomNumber.usedIndices.size) {
+        throw new Error("Nicht genug eindeutige Indizes im Array.");
+    }
+
+    const indices = new Set();
+
+    while (indices.size < amount) {
+        let randomIndex;
+        do {
+            randomIndex = Math.floor(Math.random() * sourceArray.length);
+        } while (randomNumber.usedIndices.has(randomIndex)); // Prüft, ob der Index schon vorher genutzt wurde
+
+        indices.add(randomIndex);
+    }
+
+    // Speichere die neuen Indizes für den nächsten Durchlauf
+    randomNumber.usedIndices = new Set(indices);
+
+    return Array.from(indices);
+}
+
+
 //hintergrund ändern
 function changeBackground(color){
     document.body.style.background = color;
@@ -60,25 +84,17 @@ function changeBackground(color){
 
 
 
-
-
 //drei buttons aktualisieren + neuer buchstabe
 function neueWörter(){
-    dreiWörter = [];
+    dreiZufälligeZahlen = randomNumber(3, alleWörter);
+    storageProxy.dreiZufälligeZahlen = dreiZufälligeZahlen;
+    console.log(dreiZufälligeZahlen); //test
 
-    shuffle(alleWörterShuffle);
-    storageProxy.alleWörterShuffle = alleWörterShuffle;
+    document.getElementById("button_1").textContent = alleWörter[dreiZufälligeZahlen[0]];
+    document.getElementById("button_2").textContent = alleWörter[dreiZufälligeZahlen[1]];
+    document.getElementById("button_3").textContent = alleWörter[dreiZufälligeZahlen[2]];
 
-    document.getElementById("button_1").textContent = alleWörterShuffle[0];
-    document.getElementById("button_2").textContent = alleWörterShuffle[1];
-    document.getElementById("button_3").textContent = alleWörterShuffle[2];
-
-    dreiWörter.push(alleWörter.indexOf(alleWörterShuffle[0]));
-    dreiWörter.push(alleWörter.indexOf(alleWörterShuffle[1]));
-    dreiWörter.push(alleWörter.indexOf(alleWörterShuffle[2]));
-    storageProxy.dreiWörter = dreiWörter;
-
-    ausgewählterIndex = dreiWörter[Math.floor(Math.random() * dreiWörter.length)];
+    ausgewählterIndex = dreiZufälligeZahlen[Math.floor(Math.random() * dreiZufälligeZahlen.length)];
     storageProxy.ausgewählterIndex = ausgewählterIndex;
 
 
@@ -156,5 +172,3 @@ document.getElementById("button_3").addEventListener("click", (event) => {
 });
 
 
-
-neueWörter();
